@@ -2,7 +2,7 @@
   $fh = fopen('/proc/meminfo','r');
   $mem = 0;
   while ($line = fgets($fh)) {
-    echo "<p>$line</p>";
+    echo "$line";
   }
   fclose($fh);
 ?>
