@@ -1,3 +1,9 @@
+#Para rodar o teste de stress na máquina:
+#curl -o stress.rpm ftp://fr2.rpmfind.net/linux/dag/redhat/el7/en/x86_64/dag/RPMS/stress-1.0.2-1.el7.rf.x86_64.rpm
+#sudo yum install stress.rpm
+#stress -c 2 -i 1 -m 1 --vm-bytes 128M -t 10s
+
+
 import os
 import time
 
