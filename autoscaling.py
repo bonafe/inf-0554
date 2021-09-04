@@ -1,0 +1,90 @@
+import os
+import time
+
+nomeProcurado = "eredes32_33"
+usoMaximoCPU = 0.8
+usoMaximoMemoria = 0.8
+
+def listaIPInstancias(nomeInstancia):
+	listaIP = []
+	stream = os.popen("openstack server list")
+	output = stream.read()
+	linhas = output.split("\n")
+	for linha in linhas:
+		campos = linha.split("|")
+		#Para mostrar os campos e indices
+		#for iCampo in range(len(campos)):
+		#	valor = campos[iCampo]	
+		#	print('%s-%s' %(iCampo, valor))
+		#print ('\n');
+		if (len(campos) == 8):
+			nomeInstancia = campos[2]
+			linhaIP = campos[4]
+			#print (nomeInstancia)
+			if nomeInstancia.find(nomeProcurado) > -1:
+				camposLinhaIP = linhaIP.split("=")
+				rede = camposLinhaIP[0]
+				camposIP = camposLinhaIP[1].split(",")
+				ip6 = camposIP[0].strip()
+				ip4 = camposIP[1].strip()
+				#print(ip4)
+				listaIP.append(ip4)
+	return listaIP
+
+
+def maquinaSaudavel(ip):
+
+	percentualMemoriaDisponivel = 0
+	cpu = 0
+
+	url = ip + "/diagnostico.php"
+	comando = "curl " + url
+	stream = os.popen(comando)
+        output = stream.read()
+        linhas = output.split("\n")
+	for linha in linhas:
+		#print (linha)
+		if (linha.find("Percentual") > -1):
+			percentualMemoriaDisponivel = linha.split(": ")[1]
+		elif (linha.find("CPU") > -1):
+			cpu = linha.split(": ")[1].split("-")[0]
+	
+	print ('Percentual Memoria Disponivel: %s' % percentualMemoriaDisponivel)
+	print ('Uso de CPU instantaneo: %s' % cpu)
+
+	percentualMemoriaUtilizada = 1 - float(percentualMemoriaDisponivel)
+	if (float(cpu) > usoMaximoCPU) or (float(percentualMemoriaUtilizada) > usoMaximoMemoria):
+		return False
+	else:
+		return True
+
+def redeSaudavel():
+	listaIP = listaIPInstancias(nomeProcurado)
+	qtdMaquinasSaudaveis = len(listaIP)
+
+	for ip in listaIP:
+		resultado = maquinaSaudavel(ip)
+		if (not resultado):
+			print ("ATENCAO: a maquina %s nao esta saudavel!" % ip)		
+			qtdMaquinasSaudaveis -= 1
+
+	#Caso nao existam maquinas saudaveis na rede
+	if qtdMaquinasSaudaveis == 0:
+		return False
+	else:
+		return True
+
+def criarInstancia():
+	print ("********************* CRIANDO UMA NOVA INSTANCIA NA REDE")
+	os.system('./iniciar_instancia_2.sh')
+
+try:
+	while True:
+		if not redeSaudavel():
+			print ("A REDE NAO ESTA SAUDAVEL!!!!")
+			criarInstancia()
+		time.sleep(10)
+except KeyboardInterrupt:
+	print ('Programa finalizado pelo usuario')
+
+#TODO: liberar recursos
