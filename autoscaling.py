@@ -8,7 +8,10 @@
 #TODO: no ciclo que uma máquina nova está subindo ele pode subir outra instância, tem que dar um jeito de aguardar
 #TODO: corrigir output do CURL e do iniciar_instancia.sh (não deve aparecer)
 #TODO: salvar diagnósticos para aplicar Machine Learning
-
+#TODO: adicionar monitoramento de IO:
+#		sudo apt-get install sysstat
+#		iostat -d 30 /dev/sda 
+#TODO: adicionar monitoramento de tráfego
 import os
 import time
 

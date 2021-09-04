@@ -1,5 +1,9 @@
 <?php
   
+   //TODO: adicionar monitoramento de IO:
+   //		sudo apt-get install sysstat
+   //		iostat -d 30 /dev/sda 
+
   ini_set('display_errors', 1);
   ini_set('display_startup_errors', 1);
   error_reporting(E_ALL);
