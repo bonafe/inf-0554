@@ -3,6 +3,11 @@
 #sudo yum install stress.rpm
 #stress -c 2 -i 1 -m 1 --vm-bytes 128M -t 10s
 
+#TODO: liberar recursos quando diminuir a carga da rede
+#TODO: não adianta uma máquina estar exaurida e a outra estar livre usando round robin
+#TODO: no ciclo que uma máquina nova está subindo ele pode subir outra instância, tem que dar um jeito de aguardar
+#TODO: corrigir output do CURL e do iniciar_instancia.sh (não deve aparecer)
+#TODO: salvar diagnósticos para aplicar Machine Learning
 
 import os
 import time
@@ -93,4 +98,3 @@ try:
 except KeyboardInterrupt:
 	print ('Programa finalizado pelo usuario')
 
-#TODO: liberar recursos
