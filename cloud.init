@@ -1,0 +1,12 @@
+#cloud-config
+ssh_pwauth: True
+password: cloudsenha
+package_upgrade: False
+packages:
+- httpd
+- php
+- git
+runcmd:
+- git clone https://github.com/bonafe/inf-0554.git /var/www/html/
+- systemctl enable httpd
+- systemctl start httpd
